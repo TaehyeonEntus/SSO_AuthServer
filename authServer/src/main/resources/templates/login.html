@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+<h2>로그인</h2>
+
+<form th:action="@{/login}" method="post">
+    <div>
+        <label for="username">아이디:</label>
+        <input type="text" id="username" name="username" />
+    </div>
+    <div>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" />
+    </div>
+    <div>
+        <button type="submit">로그인</button>
+    </div>
+
+    <div th:if="${param.error}">
+        <p style="color: red;">아이디 또는 비밀번호가 잘못되었습니다.</p>
+    </div>
+    <div th:if="${param.logout}">
+        <p style="color: green;">로그아웃되었습니다.</p>
+    </div>
+</form>
+
+<hr/>
+
+<!-- 🔐 GitHub 로그인 버튼 -->
+<div>
+    <a href="/oauth2/authorization/github">
+        <button style="background-color: black; color: white; padding: 10px;">
+            GitHub로 로그인
+        </button>
+    </a>
+</div>
+
+</body>
+</html>
