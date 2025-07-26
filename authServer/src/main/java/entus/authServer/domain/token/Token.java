@@ -1,4 +1,4 @@
-package entus.authServer.domain;
+package entus.authServer.domain.token;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

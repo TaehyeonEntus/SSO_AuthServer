@@ -1,6 +1,6 @@
-package entus.authServer.service.token;
+package entus.authServer.service.authorization;
 
-import entus.authServer.domain.local.CustomUserDetails;
+import entus.authServer.domain.user.local.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

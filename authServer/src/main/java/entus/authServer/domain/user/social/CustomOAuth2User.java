@@ -1,6 +1,6 @@
-package entus.authServer.domain.social;
+package entus.authServer.domain.user.social;
 
-import entus.authServer.domain.User;
+import entus.authServer.domain.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

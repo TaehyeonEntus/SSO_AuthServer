@@ -1,14 +1,12 @@
 package entus.authServer.controller;
 
-import entus.authServer.domain.Token;
-import entus.authServer.domain.local.LocalUserRegisterDTO;
-import entus.authServer.service.local.LocalUserService;
-import entus.authServer.service.token.JwtService;
+import entus.authServer.domain.token.Token;
+import entus.authServer.domain.user.local.dto.LocalUserRegisterDTO;
+import entus.authServer.service.authentication.local.LocalUserService;
+import entus.authServer.service.authorization.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor

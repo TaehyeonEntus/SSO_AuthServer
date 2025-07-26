@@ -1,9 +1,9 @@
-package entus.authServer.service.local;
+package entus.authServer.service.authentication.local;
 
-import entus.authServer.domain.AuthProvider;
-import entus.authServer.domain.Role;
-import entus.authServer.domain.User;
-import entus.authServer.domain.local.LocalUserRegisterDTO;
+import entus.authServer.domain.user.AuthProvider;
+import entus.authServer.domain.user.Role;
+import entus.authServer.domain.user.User;
+import entus.authServer.domain.user.local.dto.LocalUserRegisterDTO;
 import entus.authServer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

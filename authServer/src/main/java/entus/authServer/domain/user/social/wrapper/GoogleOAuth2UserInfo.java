@@ -1,4 +1,4 @@
-package entus.authServer.domain.social;
+package entus.authServer.domain.user.social.wrapper;
 
 import java.util.Map;
 

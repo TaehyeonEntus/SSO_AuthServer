@@ -1,7 +1,7 @@
-package entus.authServer.service.local;
+package entus.authServer.service.authentication.local;
 
-import entus.authServer.domain.local.CustomUserDetails;
-import entus.authServer.domain.User;
+import entus.authServer.domain.user.local.CustomUserDetails;
+import entus.authServer.domain.user.User;
 import entus.authServer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

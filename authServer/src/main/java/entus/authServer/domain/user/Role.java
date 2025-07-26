@@ -1,4 +1,4 @@
-package entus.authServer.domain;
+package entus.authServer.domain.user;
 
 public enum Role {
     USER, ADMIN

@@ -1,8 +1,10 @@
-package entus.authServer.service.social;
+package entus.authServer.service.authentication.social;
 
-import entus.authServer.domain.*;
-import entus.authServer.domain.social.CustomOAuth2User;
-import entus.authServer.domain.social.OAuth2UserInfo;
+import entus.authServer.domain.user.social.CustomOAuth2User;
+import entus.authServer.domain.user.social.wrapper.OAuth2UserInfo;
+import entus.authServer.domain.user.AuthProvider;
+import entus.authServer.domain.user.Role;
+import entus.authServer.domain.user.User;
 import entus.authServer.repository.UserRepository;
 import entus.authServer.util.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;

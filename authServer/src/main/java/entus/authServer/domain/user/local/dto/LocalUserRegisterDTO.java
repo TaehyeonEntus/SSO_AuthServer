@@ -1,4 +1,4 @@
-package entus.authServer.domain.local;
+package entus.authServer.domain.user.local.dto;
 
 import lombok.Data;
 

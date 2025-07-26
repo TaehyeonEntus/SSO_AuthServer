@@ -1,6 +1,6 @@
-package entus.authServer.service.token;
+package entus.authServer.service.authorization;
 
-import entus.authServer.domain.Token;
+import entus.authServer.domain.token.Token;
 import entus.authServer.exception.InvalidTokenException;
 import entus.authServer.repository.TokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -1,4 +1,4 @@
-package entus.authServer.domain;
+package entus.authServer.domain.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;

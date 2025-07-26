@@ -1,8 +1,8 @@
 package entus.authServer.util;
 
-import entus.authServer.domain.social.GithubOAuth2UserInfo;
-import entus.authServer.domain.social.GoogleOAuth2UserInfo;
-import entus.authServer.domain.social.OAuth2UserInfo;
+import entus.authServer.domain.user.social.wrapper.GithubOAuth2UserInfo;
+import entus.authServer.domain.user.social.wrapper.GoogleOAuth2UserInfo;
+import entus.authServer.domain.user.social.wrapper.OAuth2UserInfo;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 import java.util.Map;
