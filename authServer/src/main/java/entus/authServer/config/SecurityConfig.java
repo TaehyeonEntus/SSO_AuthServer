@@ -1,6 +1,6 @@
 package entus.authServer.config;
 
-import entus.authServer.jwt.JwtHandler;
+import entus.authServer.service.token.JwtHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
