@@ -1,8 +1,8 @@
 # 소개
 
-SSO(Single Sign-On) 시스템을 위한 **인증(Authentication)과 인가(Authorization)의 책임이 분리된 서버**입니다.  
-본 서버는 사용자 인증과 토큰 발급을 담당하며, 토큰에 대한 인증은 각각의 리소스 서버(Resource Server)에서 수행됩니다.
-
+- SSO(Single Sign-On) 시스템을 위한 **인증(Authentication)과 인가(Authorization)의 책임이 분리된 서버**입니다.  
+- 본 서버는 사용자 인증과 토큰 발급을 담당하며, 토큰에 대한 인증은 각각의 리소스 서버에서 수행됩니다.  
+- 기본적으로 로그인 및 회원 가입 폼에 대해서 SSR(Server Side Rendering)을 지원하지만 프론트 엔드 서버 사용시 CSR(Client Side Rendering)으로 전환할 수 있습니다.
 # 인증
 
 - 로컬 유저는 ID/PW 기반 **폼 로그인(Form Login)** 을 통해 인증합니다.
