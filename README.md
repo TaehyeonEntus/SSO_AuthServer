@@ -1,4 +1,4 @@
-# Environment Setup
+# 환경 설정
 
 ```env
 #.env
