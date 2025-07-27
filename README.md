@@ -1,7 +1,7 @@
 # 소개
 
 SSO(Single Sign-On) 시스템을 위한 **인증(Authentication)과 인가(Authorization)의 책임이 분리된 서버**입니다.  
-본 서버에서는 사용자 인증과 토큰 발급을 담당하며, 토큰에 대한 인증은 각각의 리소스 서버(Resource Server)에서 수행됩니다.
+본 서버는 사용자 인증과 토큰 발급을 담당하며, 토큰에 대한 인증은 각각의 리소스 서버(Resource Server)에서 수행됩니다.
 
 # 인증
 
