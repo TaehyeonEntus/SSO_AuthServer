@@ -2,7 +2,6 @@
 
 - SSO(Single Sign-On) 시스템을 위한 **인증(Authentication)과 인가(Authorization)의 책임이 분리된 서버**입니다.  
 - 본 서버는 사용자 인증과 토큰 발급을 담당하며, 토큰에 대한 인증은 각각의 리소스 서버에서 수행됩니다.  
-- 기본적으로 로그인 및 회원 가입 폼에 대해서 SSR(Server Side Rendering)을 지원하지만 프론트 엔드 서버 사용시 CSR(Client Side Rendering)으로 전환할 수 있습니다.
 # 인증
 
 - 로컬 유저는 ID/PW 기반 **폼 로그인(Form Login)** 을 통해 인증합니다.
@@ -27,3 +26,8 @@ GITHUB_CLIENT_SECRET=your_github_client_secret
 JWT_SECRET=your_jwt_secret
 ```
 ⚠️ .env 파일은 .gitignore에 포함시켜 버전 관리에서 제외하는 것을 권장합니다.
+
+# 주의 사항
+
+- 기본적으로 로그인 및 회원 가입 폼에 대해서 SSR(Server Side Rendering)을 지원하지만 프론트 엔드 서버 사용시 CSR(Client Side Rendering)으로 전환할 수 있습니다.
+- refresh 토큰의 악용 방지 및 생명 주기 관리를 위해 Redis를 사용합니다. 토큰 서명/만료 여부만 확인하고 싶은 경우는 Redis를 제외하고 사용 가능합니다.
