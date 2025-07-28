@@ -2,6 +2,8 @@ package entus.authServer.service.authorization;
 
 import entus.authServer.exception.InvalidTokenException;
 import entus.authServer.repository.TokenRepository;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +22,8 @@ public class JwtValidator {
     private final SecretKey secretKey;
     private final TokenRepository tokenRepository;
 
-    public String validateToken(String refreshToken) throws InvalidTokenException {
+    public String validateToken(String refreshToken) throws InvalidTokenException, ExpiredJwtException, SignatureException {
+        // ExpiredJwtException, SignatureException
         String userId = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
@@ -28,6 +31,7 @@ public class JwtValidator {
                 .getPayload()
                 .getSubject();
 
+        // InvalidTokenException
         if(!tokenRepository.existsByUserId(userId))
             throw new InvalidTokenException("유효하지 않은 토큰입니다");
 

@@ -1,5 +1,6 @@
 package entus.authServer.service.authorization;
 
+import entus.authServer.domain.user.User;
 import entus.authServer.repository.TokenRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,25 +23,27 @@ public class JwtGenerator {
     private final SecretKey secretKey;
     private final TokenRepository tokenRepository;
 
-    public String generateAccessToken(Long userId) {
+    public String generateAccessToken(User user) {
         return Jwts.builder()
-                .setSubject(userId.toString())
+                .claim("sub", user.getId())
+                .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(10).toMillis()))//10분
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(Long userId) {
+    public String generateRefreshToken(User user) {
         String jwt = Jwts.builder()
-                .setSubject(userId.toString())
+                .claim("sub", user.getId())
+                .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + Duration.ofDays(7).toMillis()))//7일
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
-        tokenRepository.save(userId.toString(),jwt);
-
+        //Redis에 Refresh Token 저장
+        tokenRepository.save(user.getId().toString(), jwt);
         return jwt;
     }
 }

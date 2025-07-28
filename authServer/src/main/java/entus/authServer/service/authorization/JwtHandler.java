@@ -1,10 +1,13 @@
 package entus.authServer.service.authorization;
 
+import entus.authServer.domain.user.User;
 import entus.authServer.domain.user.local.CustomUserDetails;
+import entus.authServer.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtHandler implements AuthenticationSuccessHandler {
     private final JwtGenerator jwtGenerator;
+    private final UserRepository userRepository;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -24,8 +28,10 @@ public class JwtHandler implements AuthenticationSuccessHandler {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUser().getId();
 
-        String accessToken = jwtGenerator.generateAccessToken(userId);
-        String refreshToken = jwtGenerator.generateRefreshToken(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
+
+        String accessToken = jwtGenerator.generateAccessToken(user);
+        String refreshToken = jwtGenerator.generateRefreshToken(user);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

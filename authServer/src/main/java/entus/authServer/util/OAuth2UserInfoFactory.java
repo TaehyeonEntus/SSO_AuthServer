@@ -4,11 +4,16 @@ import entus.authServer.domain.user.social.wrapper.GithubOAuth2UserInfo;
 import entus.authServer.domain.user.social.wrapper.GoogleOAuth2UserInfo;
 import entus.authServer.domain.user.social.wrapper.OAuth2UserInfo;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * 사용 중인 소셜 로그인 종류를 User에 주입
+ */
+@Component
 public class OAuth2UserInfoFactory {
-    public static OAuth2UserInfo getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
+    public OAuth2UserInfo getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
         if (registrationId.equalsIgnoreCase("google")) {
             return new GoogleOAuth2UserInfo(attributes);
         } else if (registrationId.equalsIgnoreCase("github")) {

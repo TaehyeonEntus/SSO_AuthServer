@@ -20,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomOAuth2UserManager extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
+    private final OAuth2UserInfoFactory oAuth2UserInfoFactory;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -38,7 +39,7 @@ public class CustomOAuth2UserManager extends DefaultOAuth2UserService {
      */
     private OAuth2User processUser(OAuth2UserRequest userRequest, OAuth2User oauth2User) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oauth2User.getAttributes());
+        OAuth2UserInfo userInfo = oAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oauth2User.getAttributes());
 
         AuthProvider provider = AuthProvider.valueOf(registrationId.toUpperCase());
         String providerId = userInfo.getId();
