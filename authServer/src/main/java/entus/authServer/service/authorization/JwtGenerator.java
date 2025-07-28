@@ -26,6 +26,7 @@ public class JwtGenerator {
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .claim("sub", user.getId())
+                .claim("name", user.getName())
                 .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(10).toMillis()))//10분
@@ -36,6 +37,7 @@ public class JwtGenerator {
     public String generateRefreshToken(User user) {
         String jwt = Jwts.builder()
                 .claim("sub", user.getId())
+                .claim("name", user.getName())
                 .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + Duration.ofDays(7).toMillis()))//7일
