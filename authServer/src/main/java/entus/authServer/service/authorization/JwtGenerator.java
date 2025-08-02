@@ -25,7 +25,7 @@ public class JwtGenerator {
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
-                .claim("sub", user.getId())
+                .claim("sub", user.getId().toString())
                 .claim("name", user.getName())
                 .claim("role", user.getRole())
                 .issuedAt(new Date())
@@ -36,7 +36,7 @@ public class JwtGenerator {
 
     public String generateRefreshToken(User user) {
         String jwt = Jwts.builder()
-                .claim("sub", user.getId())
+                .claim("sub", user.getId().toString())
                 .claim("name", user.getName())
                 .claim("role", user.getRole())
                 .issuedAt(new Date())
