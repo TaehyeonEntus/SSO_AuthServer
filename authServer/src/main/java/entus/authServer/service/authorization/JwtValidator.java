@@ -2,6 +2,7 @@ package entus.authServer.service.authorization;
 
 import entus.authServer.exception.InvalidTokenException;
 import entus.authServer.repository.TokenRepository;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.Keys;
@@ -14,13 +15,17 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 public class JwtValidator {
-    public JwtValidator(@Value("${JWT_SECRET}") String secret, TokenRepository tokenRepository) {
+    private final SecretKey secretKey;
+    private final TokenRepository tokenRepository;
+
+    public JwtValidator(TokenRepository tokenRepository) {
+        Dotenv dotenv = Dotenv
+                .load();
+        String secret = dotenv.get("JWT_SECRET");
+
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.tokenRepository = tokenRepository;
     }
-
-    private final SecretKey secretKey;
-    private final TokenRepository tokenRepository;
 
     public String validateToken(String refreshToken) throws InvalidTokenException, ExpiredJwtException, SignatureException {
         // ExpiredJwtException, SignatureException
@@ -32,7 +37,7 @@ public class JwtValidator {
                 .getSubject();
 
         // InvalidTokenException
-        if(!tokenRepository.existsByUserId(userId))
+        if (!tokenRepository.existsByUserId(userId))
             throw new InvalidTokenException("유효하지 않은 토큰입니다");
 
         return userId;
