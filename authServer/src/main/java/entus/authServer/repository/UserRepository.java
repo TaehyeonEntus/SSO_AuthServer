@@ -7,11 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-/**
- * RDB 유저 관리
- */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByName(String username);
     Optional<User> findByUsername(String username);
     Boolean existsByUsername(String email);
     Optional<User> findByProviderAndProviderId(AuthProvider provider, String providerId);

@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 
-/**
- * Redis 토큰 관리
- */
 @Repository
 @RequiredArgsConstructor
 public class TokenRepository {
