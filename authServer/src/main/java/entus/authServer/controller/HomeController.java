@@ -13,6 +13,7 @@ public class HomeController {
     public String login() {
         return "login";
     }
+
     @GetMapping("/error")
     public String error() {
         return "error";
