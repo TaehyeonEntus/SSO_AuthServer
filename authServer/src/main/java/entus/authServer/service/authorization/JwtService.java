@@ -1,12 +1,14 @@
 package entus.authServer.service.authorization;
 
-import entus.authServer.domain.token.Token;
 import entus.authServer.domain.user.User;
 import entus.authServer.exception.InvalidTokenException;
 import entus.authServer.repository.TokenRepository;
 import entus.authServer.repository.UserRepository;
+import entus.authServer.util.JwtCookieBuilder;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class JwtService {
     private final JwtValidator jwtValidator;
     private final JwtGenerator jwtGenerator;
+    private final JwtCookieBuilder jwtCookieBuilder;
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
 
@@ -25,7 +28,7 @@ public class JwtService {
      * 2.토큰 사용 가능 여부 검사
      * 3.토큰 재 발급
      */
-    public Token reissue(String refreshToken) throws InvalidTokenException, ExpiredJwtException, SignatureException {
+    public void reissue(HttpServletRequest request, HttpServletResponse response, String refreshToken) throws InvalidTokenException, ExpiredJwtException, SignatureException {
         // 1.토큰 서명, 만료 검사
         String userId = jwtValidator.validateToken(refreshToken);
 
@@ -37,9 +40,6 @@ public class JwtService {
         User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
 
         // 3.토큰 재 발급
-        String newAccessToken = jwtGenerator.generateAccessToken(user);
-        String newRefreshToken = jwtGenerator.generateRefreshToken(user);
-
-        return new Token(newAccessToken, newRefreshToken);
+        jwtCookieBuilder.createJwtCookieResponse(request,response,user);
     }
 }
