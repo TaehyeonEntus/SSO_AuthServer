@@ -18,12 +18,14 @@ public class JwtCookieBuilder {
         String refreshToken = jwtGenerator.generateRefreshToken(user);
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
+        accessCookie.setMaxAge(600);
         accessCookie.setDomain("localhost");
         accessCookie.setHttpOnly(true);
         accessCookie.setPath("/");
         response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+        refreshCookie.setMaxAge(604800);
         refreshCookie.setDomain("localhost");
         refreshCookie.setHttpOnly(true);
         refreshCookie.setPath("/");
