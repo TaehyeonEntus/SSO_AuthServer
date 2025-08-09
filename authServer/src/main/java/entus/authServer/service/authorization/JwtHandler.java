@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 
 /**
  * 로그인 시 JWT 발급 로직
@@ -30,10 +29,6 @@ public class JwtHandler implements AuthenticationSuccessHandler {
         String name = authentication.getName();
         User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
         jwtCookieBuilder.createJwtCookieResponse(request, response, user);
-        String redirectUrl = request.getParameter("redirectUrl");
-        if(redirectUrl != null)
-            response.sendRedirect(URLDecoder.decode(redirectUrl));
-        else
-            response.sendRedirect("http://localhost:8080/user");
+        response.sendRedirect("http://localhost:9000/home");
     }
 }
