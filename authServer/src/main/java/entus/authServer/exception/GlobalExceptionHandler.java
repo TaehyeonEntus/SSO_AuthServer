@@ -1,16 +1,28 @@
 package entus.authServer.exception;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({InvalidTokenException.class, ExpiredJwtException.class, SignatureException.class})
-    public String handleAuthExceptions(HttpServletRequest request, HttpServletResponse response) {
-        return "redirect:/login?error=token";
+    @ExceptionHandler({AccessTokenException.class})
+    public ResponseEntity<Map<String, String>> handleAccessTokenException() {
+        Map<String, String> body = new HashMap<>();
+        body.put("error", "access_token_error");
+        body.put("message", "Access token is invalid or expired.");
+        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(body);
+    }
+
+    @ExceptionHandler({RefreshTokenException.class})
+    public ResponseEntity<Map<String, String>> handleRefreshTokenException() {
+        Map<String, String> body = new HashMap<>();
+        body.put("error", "refresh_token_error");
+        body.put("message", "Refresh token is invalid or expired.");
+        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(body);
     }
 }

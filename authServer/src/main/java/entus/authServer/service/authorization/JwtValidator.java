@@ -1,13 +1,11 @@
 package entus.authServer.service.authorization;
 
-import entus.authServer.exception.InvalidTokenException;
+import entus.authServer.exception.AccessTokenException;
+import entus.authServer.exception.RefreshTokenException;
 import entus.authServer.repository.TokenRepository;
 import io.github.cdimascio.dotenv.Dotenv;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -19,27 +17,46 @@ public class JwtValidator {
     private final TokenRepository tokenRepository;
 
     public JwtValidator(TokenRepository tokenRepository) {
-        Dotenv dotenv = Dotenv
-                .load();
+        Dotenv dotenv = Dotenv.load();
         String secret = dotenv.get("JWT_SECRET");
 
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.tokenRepository = tokenRepository;
     }
 
-    public String validateToken(String refreshToken) throws InvalidTokenException, ExpiredJwtException, SignatureException {
-        // ExpiredJwtException, SignatureException
-        String userId = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(refreshToken)
-                .getPayload()
-                .getSubject();
+    public String validateRefreshToken(String refreshToken) throws RefreshTokenException {
+        String userId = null;
+
+        try {
+            userId = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(refreshToken)
+                    .getPayload()
+                    .getSubject();
+        } catch (JwtException e) {
+            throw new RefreshTokenException(e.getMessage());
+        }
 
         // InvalidTokenException
         if (!tokenRepository.existsByUserId(userId))
-            throw new InvalidTokenException("유효하지 않은 토큰입니다");
+            throw new RefreshTokenException("token does not exist");
 
         return userId;
+    }
+
+    public Jws<Claims> validateAccessToken(String accessToken) throws AccessTokenException {
+        Jws<Claims> jws;
+
+        try {
+            jws = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(accessToken);
+        } catch (JwtException e) {
+            throw new AccessTokenException(e.getMessage());
+        }
+
+        return jws;
     }
 }

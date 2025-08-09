@@ -1,5 +1,6 @@
 package entus.authServer.config;
 
+import entus.authServer.filter.AccessTokenValidFilter;
 import entus.authServer.service.authorization.JwtHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,7 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtHandler jwtHandler;
-
+    private final AccessTokenValidFilter accessTokenValidFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
@@ -36,16 +38,19 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/login", "/favicon.ico", "/error", "/register", "/token/refresh").permitAll()
+                        .requestMatchers("/home","/").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .successHandler(jwtHandler)
                         .loginPage("/login")
                         .failureUrl("/login?error"))
+
                 .oauth2Login(auth -> auth
                         .successHandler(jwtHandler)
                         .loginPage("/login")
-                        .failureUrl("/login?error"));
+                        .failureUrl("/login?error"))
+                .addFilterBefore(accessTokenValidFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
