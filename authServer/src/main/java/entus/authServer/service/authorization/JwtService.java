@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtService {
     private final JwtValidator jwtValidator;
-    private final JwtGenerator jwtGenerator;
     private final JwtCookieBuilder jwtCookieBuilder;
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
