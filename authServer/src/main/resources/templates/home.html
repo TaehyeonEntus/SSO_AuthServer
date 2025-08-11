@@ -1,14 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8" />
     <title>Home</title>
-    <script src="auth.js"></script>
 </head>
 <body>
 <h1>Home Page</h1>
 
-<button onclick="loadProtectedData('/api/protected-resource')">Load Protected Data</button>
+<div id="server-buttons"></div> <!-- 버튼 넣을 공간 -->
 
+<script type="module">
+    import { loadProtectedData } from "/js/apiRequest.js";
+
+    window.addEventListener("DOMContentLoaded", async () => {
+
+        const data = await loadProtectedData("/api/home");
+
+        if (data && data.resourceServers) {
+            createServerButtons(data.resourceServers);
+        } else {
+            console.error("서버 리스트를 불러오지 못했습니다.");
+        }
+    });
+
+    function createServerButtons(serverList) {
+        const container = document.getElementById("server-buttons");
+        container.innerHTML = "";
+
+        serverList.forEach(server => {
+            const btn = document.createElement("button");
+            btn.textContent = server;
+            btn.addEventListener("click", () => {
+                window.location.href = server;
+            });
+            container.appendChild(btn);
+        });
+    }
+</script>
 </body>
 </html>
