@@ -1,5 +1,7 @@
 package entus.authServer.config;
 
+import entus.authServer.exception.CustomAccessDeniedHandler;
+import entus.authServer.exception.CustomAuthenticationEntryPoint;
 import entus.authServer.filter.AccessTokenValidFilter;
 import entus.authServer.service.authorization.JwtHandler;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
     private final JwtHandler jwtHandler;
     private final AccessTokenValidFilter accessTokenValidFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
@@ -37,8 +42,9 @@ public class SecurityConfig {
                 .sessionManagement((configurer) -> configurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login", "/favicon.ico", "/error", "/register", "/token/refresh").permitAll()
-                        .requestMatchers("/home","/").hasRole("USER")
+                        .requestMatchers("/favicon.ico", "/error", "/js/**").permitAll()
+                        .requestMatchers("/", "/home", "/login", "/register", "/token/refresh").permitAll()
+                        .requestMatchers("/api/home").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -50,20 +56,27 @@ public class SecurityConfig {
                         .successHandler(jwtHandler)
                         .loginPage("/login")
                         .failureUrl("/login?error"))
+
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                )
+
                 .addFilterBefore(accessTokenValidFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:8080"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // ✅ 쿠키 전송 위해 true
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // 모든 경로에 적용
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
