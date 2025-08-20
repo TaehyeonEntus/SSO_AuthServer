@@ -5,6 +5,7 @@ import entus.authServer.exception.CustomAuthenticationEntryPoint;
 import entus.authServer.filter.AccessTokenValidFilter;
 import entus.authServer.service.authorization.JwtHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 .sessionManagement((configurer) -> configurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(EndpointRequest.to("prometheus")).permitAll()
                         .requestMatchers("/favicon.ico", "/error", "/js/**").permitAll()
                         .requestMatchers("/", "/home", "/login", "/register", "/token/refresh").permitAll()
                         .requestMatchers("/api/home").hasRole("USER")
