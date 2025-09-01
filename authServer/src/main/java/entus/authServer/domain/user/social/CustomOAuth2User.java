@@ -10,7 +10,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-
+/**
+ * Security Context에 등록할 SocialUser 구현체
+ */
 @Getter
 @RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User {

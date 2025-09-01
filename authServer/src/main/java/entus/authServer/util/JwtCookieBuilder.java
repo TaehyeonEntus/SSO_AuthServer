@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+//쿠키에 access, refresh 토큰 넣어주는 빌더
 @Component
 @RequiredArgsConstructor
 public class JwtCookieBuilder {

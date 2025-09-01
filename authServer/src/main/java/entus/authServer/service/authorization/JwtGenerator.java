@@ -6,8 +6,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -15,6 +13,11 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
+/**
+ * 토큰 생성기
+ * accessToken 기본 expireTime -> 10분
+ * refreshToken 기본 expireTime -> 7일
+ */
 @Service
 public class JwtGenerator {
     private final SecretKey secretKey;
@@ -51,7 +54,7 @@ public class JwtGenerator {
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
-        //Redis에 Refresh Token 저장
+        //Refresh Token은 생성과 동시에 Redis에 저장
         tokenRepository.save(user.getId().toString(), jwt);
         return jwt;
     }

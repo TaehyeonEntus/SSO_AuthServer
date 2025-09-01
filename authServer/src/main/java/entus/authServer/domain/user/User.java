@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+
 @Getter
-@Setter
+@Setter //세터는 빼도 될거같음
 @Entity
 @Table(name = "users")
 @NoArgsConstructor

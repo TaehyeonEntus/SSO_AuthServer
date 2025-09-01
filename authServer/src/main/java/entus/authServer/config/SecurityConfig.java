@@ -69,6 +69,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * 리소스 서버 등록하는 Bean!!!!!, properties에 있는 경로 땡겨와서 써도 될거 같음
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

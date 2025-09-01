@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Security Context에 등록할 LocalUser 구현체
+ */
 @Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {

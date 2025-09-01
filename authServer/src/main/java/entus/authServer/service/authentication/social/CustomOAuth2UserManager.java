@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Security 내부 에서 User 찾을 때 사용할 구현체
+ * 각 인증서버에서 인증 후 로컬에 등록 or 갱신
+ */
+
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserManager extends DefaultOAuth2UserService {
@@ -28,7 +33,7 @@ public class CustomOAuth2UserManager extends DefaultOAuth2UserService {
 
         try {
             return processUser(userRequest, oauth2User);
-        } catch (Exception ex) {
+        } catch (OAuth2AuthenticationException ex) {
             throw new OAuth2AuthenticationException("OAuth2 처리 중 오류 발생");
         }
     }
@@ -52,7 +57,7 @@ public class CustomOAuth2UserManager extends DefaultOAuth2UserService {
     }
 
     /**
-     * 새로운 소셜 사용자 등록
+     * 소셜 사용자 등록
      */
     private User registerUser(OAuth2UserInfo userInfo, AuthProvider provider) {
         User user = new User();
@@ -68,7 +73,7 @@ public class CustomOAuth2UserManager extends DefaultOAuth2UserService {
     }
 
     /**
-     * 기존 소셜 사용자 최신화
+     * 소셜 사용자 갱신
      */
     private User updateUser(User existingUser, OAuth2UserInfo userInfo) {
         existingUser.setName(userInfo.getName());

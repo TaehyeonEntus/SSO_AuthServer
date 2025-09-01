@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 토큰 검증기
+ */
 @Service
 public class JwtValidator {
     private final SecretKey secretKey;

@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 
+/**
+ * refresh 토큰 생명 주기 관리할 Redis
+ */
 @Repository
 @RequiredArgsConstructor
 public class TokenRepository {
