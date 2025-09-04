@@ -10,11 +10,11 @@
 <div id="server-buttons"></div> <!-- 버튼 넣을 공간 -->
 
 <script type="module">
-    import { loadProtectedData } from "/js/apiRequest.js";
+    import { fetchData } from "/js/fetchData.js";
 
     window.addEventListener("DOMContentLoaded", async () => {
 
-        const data = await loadProtectedData("/api/home");
+        const data = await fetchData("/api/home","GET",null);
 
         if (data && data.resourceServers) {
             createServerButtons(data.resourceServers);
