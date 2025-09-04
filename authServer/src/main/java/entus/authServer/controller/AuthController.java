@@ -18,20 +18,6 @@ public class AuthController {
     private final LocalUserService localUserService;
     private final JwtService jwtService;
 
-    @GetMapping("/")
-    public String index() {
-        return "redirect:/login";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
 
     @PostMapping("/register")
     public String register(@ModelAttribute LocalUserRegisterDTO dto) {
