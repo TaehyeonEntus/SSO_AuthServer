@@ -5,6 +5,7 @@ import entus.authServer.exception.CustomAuthenticationEntryPoint;
 import entus.authServer.filter.AccessTokenValidFilter;
 import entus.authServer.service.authorization.JwtHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,9 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    @Value("${resource.servers}")
+    private final List<String> resourceServers;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
@@ -44,20 +48,20 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(EndpointRequest.to("prometheus")).permitAll()
-                        .requestMatchers("/favicon.ico", "/error", "/js/**").permitAll()
-                        .requestMatchers("/", "/home", "/login", "/register", "/token/refresh").permitAll()
-                        .requestMatchers("/api/home").hasRole("USER")
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/js/**", "/css/**", "/images/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/token/refresh", "/home").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .successHandler(jwtHandler)
                         .loginPage("/login")
-                        .failureUrl("/login?error"))
+                        .failureUrl("/login"))
 
                 .oauth2Login(auth -> auth
                         .successHandler(jwtHandler)
                         .loginPage("/login")
-                        .failureUrl("/login?error"))
+                        .failureUrl("/login"))
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -70,13 +74,13 @@ public class SecurityConfig {
     }
 
     /**
-     * 리소스 서버 등록하는 Bean!!!!!, properties에 있는 경로 땡겨와서 써도 될거 같음
+     * 리소스 서버 등록하는 Bean!!!!!
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedOrigins(resourceServers);
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
