@@ -7,14 +7,12 @@
 <body>
 <h1>Home Page</h1>
 
-<div id="server-buttons"></div> <!-- 버튼 넣을 공간 -->
+<div id="server-buttons"></div>
 
 <script type="module">
-    import { fetchData } from "/js/fetchData.js";
-
+    import { getData } from "/js/api.js";
     window.addEventListener("DOMContentLoaded", async () => {
-
-        const data = await fetchData("/api/home","GET",null);
+        const data = await getData("/api/home");
 
         if (data && data.resourceServers) {
             createServerButtons(data.resourceServers);

@@ -1,38 +1,144 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
+    <style>
+        .error-msg {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 <h2>회원가입</h2>
 
-<form th:action="@{/register}" method="post">
+<form id="registerForm">
     <div>
         <label for="username">아이디:</label>
-        <input type="text" id="username" name="username" required/>
+        <input type="text" id="username" name="username"/>
+        <div id="usernameError" class="error-msg"></div>
     </div>
     <div>
         <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password" required/>
+        <input type="password" id="password" name="password"/>
+        <div id="passwordError" class="error-msg"></div>
     </div>
     <div>
-        <label for="name">이름:</label>
-        <input type="text" id="name" name="name" required/>
+        <label for="passwordConfirm">비밀번호 확인:</label>
+        <input type="password" id="passwordConfirm" name="passwordConfirm"/>
+        <div id="passwordConfirmError" class="error-msg"></div>
     </div>
     <div>
-        <button type="submit">회원가입</button>
+        <label for="name">닉네임:</label>
+        <input type="text" id="name" name="name"/>
+        <div id="nameError" class="error-msg"></div>
     </div>
-
-    <!-- 오류 메시지 출력 -->
-    <div th:if="${param.error}">
-        <p style="color: red;">회원가입 중 오류가 발생했습니다.</p>
-    </div>
-    <div th:if="${param.success}">
-        <p style="color: green;">회원가입이 완료되었습니다. 로그인해주세요.</p>
+    <div>
+        <button type="submit" id="registerBtn">가입</button>
     </div>
 </form>
 
-<hr/>
+<script>
+    class RegisterHandler {
+        constructor() {
+            this.form = document.getElementById('registerForm');
+            this.usernameInput = document.getElementById('username');
+            this.passwordInput = document.getElementById('password');
+            this.passwordConfirmInput = document.getElementById('passwordConfirm');
+            this.nameInput = document.getElementById('name');
+
+            this.usernameErrorDiv = document.getElementById('usernameError');
+            this.passwordErrorDiv = document.getElementById('passwordError');
+            this.passwordConfirmErrorDiv = document.getElementById('passwordConfirmError');
+            this.nameErrorDiv = document.getElementById('nameError');
+
+            this.registerBtn = document.getElementById('registerBtn');
+
+            this.initEventListeners();
+        }
+
+        initEventListeners() {
+            this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
+
+        async handleSubmit(e) {
+            e.preventDefault();
+
+            const username = this.usernameInput.value.trim();
+            const password = this.passwordInput.value;
+            const passwordConfirm = this.passwordConfirmInput.value;
+            const name = this.nameInput.value.trim();
+
+            this.clearErrors();
+            this.setLoading(true);
+
+            try {
+                const data = { username, password, passwordConfirm, name };
+
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                if (response.status === 400) {
+                    const errors = await response.json();
+                    this.displayValidationErrors(errors);
+                } else {
+                    alert('회원가입 실패: 서버 오류');
+                }
+
+            } catch (error) {
+                console.error('Register request error:', error);
+                alert('회원가입 중 오류 발생');
+            } finally {
+                this.setLoading(false);
+            }
+        }
+
+        displayValidationErrors(errors) {
+            if (errors.username) this.usernameErrorDiv.textContent = errors.username;
+            if (errors.password) this.passwordErrorDiv.textContent = errors.password;
+            if (errors.passwordConfirm) this.passwordConfirmErrorDiv.textContent = errors.passwordConfirm;
+            if (errors.name) this.nameErrorDiv.textContent = errors.name;
+        }
+
+        clearErrors() {
+            this.usernameErrorDiv.textContent = '';
+            this.passwordErrorDiv.textContent = '';
+            this.passwordConfirmErrorDiv.textContent = '';
+            this.nameErrorDiv.textContent = '';
+        }
+
+        setLoading(isLoading) {
+            if (isLoading) {
+                this.registerBtn.textContent = '가입 중...';
+                this.registerBtn.disabled = true;
+                this.form.classList.add('loading');
+            } else {
+                this.registerBtn.textContent = '가입';
+                this.registerBtn.disabled = false;
+                this.form.classList.remove('loading');
+            }
+        }
+    }
+
+    // DOM 로드 후 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+        new RegisterHandler();
+    });
+</script>
 </body>
 </html>

@@ -1,30 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
+    <style>
+        .error-msg {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 <h2>로그인</h2>
 
-<form th:action="@{/login}" method="post">
+<form id="loginForm">
     <div>
         <label for="username">아이디:</label>
-        <input type="text" id="username" name="username" />
+        <input type="text" id="username" name="username"/>
+        <div id="usernameError" class="error-msg"></div>
     </div>
     <div>
         <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password" />
+        <input type="password" id="password" name="password"/>
+        <div id="passwordError" class="error-msg"></div>
     </div>
     <div>
-        <button type="submit">로그인</button>
-    </div>
-
-    <div th:if="${param.error}">
-        <p style="color: red;">아이디 또는 비밀번호가 잘못되었습니다.</p>
-    </div>
-    <div th:if="${param.logout}">
-        <p style="color: green;">로그아웃되었습니다.</p>
+        <button type="submit" id="loginBtn">로그인</button>
     </div>
 </form>
 
@@ -38,6 +44,192 @@
         </button>
     </a>
 </div>
+
+<div>
+    <a href="/register">
+        <button style="background-color: green; color: white; padding: 10px; border: none; cursor: pointer;">
+            회원가입
+        </button>
+    </a>
+</div>
+
+
+<script>
+    class LoginHandler {
+        constructor() {
+            this.form = document.getElementById('loginForm');
+            this.usernameInput = document.getElementById('username');
+            this.passwordInput = document.getElementById('password');
+            this.usernameErrorDiv = document.getElementById('usernameError');
+            this.passwordErrorDiv = document.getElementById('passwordError');
+            this.loginBtn = document.getElementById('loginBtn');
+
+            this.initEventListeners();
+        }
+
+        initEventListeners() {
+            this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
+
+        async handleSubmit(e) {
+            e.preventDefault();
+
+            const username = this.usernameInput.value.trim();
+            const password = this.passwordInput.value;
+
+            this.clearErrors();
+            this.setLoading(true);
+
+            try {
+                // 1단계: Validation 체크
+                const isValid = await this.validateCredentials(username, password);
+                if (!isValid) {
+                    return;
+                }
+
+                // 2단계: Spring Security 로그인
+                await this.performLogin(username, password);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                this.showError('password', '서버 오류가 발생했습니다.');
+            } finally {
+                this.setLoading(false);
+            }
+        }
+
+        async validateCredentials(username, password) {
+            try {
+                const response = await fetch('/login/form-valid', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    return true;
+                }
+
+                if (response.status === 400) {
+                    const errors = await response.json();
+                    this.displayValidationErrors(errors);
+                } else {
+                    this.showError('password', '유효성 검사 실패');
+                }
+
+                return false;
+
+            } catch (error) {
+                console.error('Validation error:', error);
+                this.showError('password', '유효성 검사 중 오류 발생');
+                return false;
+            }
+        }
+
+        async performLogin(username, password) {
+            const params = new URLSearchParams();
+            params.append('username', username);
+            params.append('password', password);
+
+            try {
+                const response = await fetch('/login/login-process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: params.toString()
+                });
+
+                if (response.ok) {
+                    // 로그인 성공
+                    alert('로그인 성공!');
+                    window.location.href = '/home';
+                } else {
+                    // 로그인 실패
+                    await this.handleLoginFailure(response);
+                }
+
+            } catch (error) {
+                console.error('Login request error:', error);
+                this.showError('password', '로그인 요청 실패');
+            }
+        }
+
+        async handleLoginFailure(response) {
+            let errorMessage = '로그인에 실패했습니다.';
+
+            try {
+                const contentType = response.headers.get('content-type');
+
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    if (errorData.message) {
+                        errorMessage = errorData.message;
+                    }
+                } else {
+                    // Spring Security는 보통 HTML 응답을 반환하므로
+                    // 상태 코드에 따라 적절한 메시지 표시
+                    switch (response.status) {
+                        case 401:
+                            errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.';
+                            break;
+                        case 403:
+                            errorMessage = '접근이 거부되었습니다.';
+                            break;
+                        default:
+                            errorMessage = `로그인 실패 (${response.status})`;
+                    }
+                }
+            } catch (parseError) {
+                console.error('Error parsing login failure response:', parseError);
+            }
+
+            this.showError('password', errorMessage);
+        }
+
+        displayValidationErrors(errors) {
+            if (errors.username) {
+                this.showError('username', errors.username);
+            }
+            if (errors.password) {
+                this.showError('password', errors.password);
+            }
+        }
+
+        showError(field, message) {
+            if (field === 'username') {
+                this.usernameErrorDiv.textContent = message;
+            } else if (field === 'password') {
+                this.passwordErrorDiv.textContent = message;
+            }
+        }
+
+        clearErrors() {
+            this.usernameErrorDiv.textContent = '';
+            this.passwordErrorDiv.textContent = '';
+        }
+
+        setLoading(isLoading) {
+            if (isLoading) {
+                this.loginBtn.textContent = '로그인 중...';
+                this.loginBtn.disabled = true;
+                this.form.classList.add('loading');
+            } else {
+                this.loginBtn.textContent = '로그인';
+                this.loginBtn.disabled = false;
+                this.form.classList.remove('loading');
+            }
+        }
+    }
+
+    // DOM이 로드되면 LoginHandler 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+        new LoginHandler();
+    });
+</script>
 
 </body>
 </html>
