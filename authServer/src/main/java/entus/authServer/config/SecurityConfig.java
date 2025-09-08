@@ -3,7 +3,8 @@ package entus.authServer.config;
 import entus.authServer.exception.CustomAccessDeniedHandler;
 import entus.authServer.exception.CustomAuthenticationEntryPoint;
 import entus.authServer.filter.AccessTokenValidFilter;
-import entus.authServer.service.authorization.JwtHandler;
+import entus.authServer.service.handler.CustomFailureHandler;
+import entus.authServer.service.handler.CustomSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -30,7 +31,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtHandler jwtHandler;
+    private final CustomSuccessHandler customSuccessHandler;
+    private final CustomFailureHandler customFailureHandler;
     private final AccessTokenValidFilter accessTokenValidFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -50,18 +52,20 @@ public class SecurityConfig {
                         .requestMatchers(EndpointRequest.to("prometheus")).permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/", "/login", "/register", "/token/refresh", "/home").permitAll()
+                        .requestMatchers("/", "/login", "/login/form-valid","/login/login-process", "/register", "/home", "/token/refresh").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .successHandler(jwtHandler)
+                        .successHandler(customSuccessHandler)
+                        .failureHandler(customFailureHandler)
                         .loginPage("/login")
-                        .failureUrl("/login"))
+                        .loginProcessingUrl("/login/login-process"))
 
                 .oauth2Login(auth -> auth
-                        .successHandler(jwtHandler)
+                        .successHandler(customSuccessHandler)
+                        .failureHandler(customFailureHandler)
                         .loginPage("/login")
-                        .failureUrl("/login"))
+                        .defaultSuccessUrl("/home"))
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)

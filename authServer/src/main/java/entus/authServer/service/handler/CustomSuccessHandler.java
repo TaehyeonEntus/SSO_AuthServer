@@ -1,4 +1,4 @@
-package entus.authServer.service.authorization;
+package entus.authServer.service.handler;
 
 import entus.authServer.domain.user.User;
 import entus.authServer.repository.UserRepository;
@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 @Service
 @RequiredArgsConstructor
-public class JwtHandler implements AuthenticationSuccessHandler {
+public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     private final UserRepository userRepository;
     private final JwtCookieBuilder jwtCookieBuilder;
     @Override
@@ -29,6 +29,6 @@ public class JwtHandler implements AuthenticationSuccessHandler {
         String name = authentication.getName();
         User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
         jwtCookieBuilder.createJwtCookieResponse(request, response, user);
-        response.sendRedirect("http://localhost:9000/home");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
