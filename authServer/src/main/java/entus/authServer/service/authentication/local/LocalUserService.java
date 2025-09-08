@@ -18,7 +18,7 @@ public class LocalUserService {
     /**
      * 신규 유저 등록
      */
-    public User registerUser(LocalUserRegisterDTO dto) {
+    public void registerUser(LocalUserRegisterDTO dto) throws IllegalArgumentException {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
@@ -31,6 +31,6 @@ public class LocalUserService {
         user.setProvider(AuthProvider.LOCAL); // 로컬 로그인 사용자
         user.setProviderId(null); // 소셜 아님
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }
