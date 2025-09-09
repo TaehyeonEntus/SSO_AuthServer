@@ -2,22 +2,145 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Server - Home</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 900px;
+        }
+        .card-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            border: none;
+            padding: 2rem;
+            text-align: center;
+        }
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        .server-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            width: 100%;
+        }
+        .server-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .loading-spinner { display: none; }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .card-body { padding: 2rem 1rem; }
+        }
+    </style>
 </head>
 <body>
-<h1>Home Page</h1>
 
-<div id="server-buttons"></div>
+<button class="btn logout-btn" onclick="logout()">
+    <i class="fas fa-sign-out-alt"></i> 로그아웃
+</button>
 
+<div class="container main-container">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="mb-0">
+                <i class="fas fa-shield-alt me-3"></i>
+                인증 서버 대시보드
+            </h1>
+            <p class="mb-0 mt-3 opacity-75">연결 가능한 리소스 서버를 선택하세요</p>
+        </div>
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">로딩중...</span>
+                    </div>
+                    <p class="mt-3 text-muted fs-5">서버 목록을 불러오는 중...</p>
+                </div>
+            </div>
+
+            <div id="server-buttons" class="server-grid"></div>
+
+            <div id="no-servers" class="text-center text-muted py-5" style="display: none;">
+                <i class="fas fa-exclamation-circle fa-4x mb-4 opacity-50"></i>
+                <h4 class="mb-3">사용 가능한 서버가 없습니다</h4>
+                <p class="fs-5 opacity-75">관리자에게 문의하세요</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 <script type="module">
     import { getData } from "/js/api.js";
-    window.addEventListener("DOMContentLoaded", async () => {
-        const data = await getData("/api/home");
 
-        if (data && data.resourceServers) {
-            createServerButtons(data.resourceServers);
-        } else {
-            console.error("서버 리스트를 불러오지 못했습니다.");
+    window.addEventListener("DOMContentLoaded", async () => {
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const serverButtons = document.getElementById("server-buttons");
+        const noServers = document.getElementById("no-servers");
+
+        loadingSpinner.style.display = "block";
+
+        try {
+            const data = await getData("/api/home");
+
+            if (data && data.resourceServers && data.resourceServers.length > 0) {
+                createServerButtons(data.resourceServers);
+                serverButtons.style.display = "grid";
+            } else {
+                noServers.style.display = "block";
+            }
+        } catch (error) {
+            console.error("서버 리스트를 불러오지 못했습니다:", error);
+            noServers.style.display = "block";
+        } finally {
+            loadingSpinner.style.display = "none";
         }
     });
 
@@ -25,14 +148,38 @@
         const container = document.getElementById("server-buttons");
         container.innerHTML = "";
 
-        serverList.forEach(server => {
+        serverList.forEach((server, index) => {
             const btn = document.createElement("button");
-            btn.textContent = server;
+            btn.className = "btn server-btn";
+            btn.innerHTML = `<i class="fas fa-server me-2"></i> ${server}`;
+
             btn.addEventListener("click", () => {
-                window.location.href = server;
+                btn.innerHTML = `
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                연결 중...
+            `;
+                btn.disabled = true;
+
+                setTimeout(() => { window.location.href = server; }, 500);
             });
+
+            btn.style.animationDelay = `${index * 0.1}s`;
             container.appendChild(btn);
         });
+    }
+
+    window.logout = async function() {
+        if (confirm('정말 로그아웃 하시겠습니까?')) {
+            try {
+                await fetch('/logout', { method: 'POST' });
+                window.location.href = '/login';
+            } catch (error) {
+                console.error('로그아웃 중 오류:', error);
+                window.location.href = '/login';
+            }
+        }
     }
 </script>
 </body>

@@ -1,60 +1,190 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Server - 로그인</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+        }
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* 중앙 정렬 */
+            padding: 2rem;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            max-width: 500px; /* PC에서 최대 폭 */
+            width: 100%;      /* 모바일에서는 100% */
+            animation: fadeIn 0.5s ease;
+        }
+        .card-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-primary, .btn-github, .btn-success {
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        .btn-github {
+            background: #24292e;
+            border: none;
+            color: white;
+            text-decoration: none;
+        }
+        .btn-github:hover {
+            background: #1a1e22;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(36, 41, 46, 0.3);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
         .error-msg {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 2px;
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: block;
         }
         .loading {
             opacity: 0.7;
             pointer-events: none;
         }
+        .divider {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #dee2e6;
+        }
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #6c757d;
+        }
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape:nth-child(1) { width: 100px; height: 100px; top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; top: 60%; right: 15%; animation-delay: 2s; }
+        .shape:nth-child(3) { width: 80px; height: 80px; top: 40%; left: 80%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px);}
+            100% { opacity: 1; transform: translateY(0);}
+        }
     </style>
 </head>
 <body>
-<h2>로그인</h2>
-
-<form id="loginForm">
-    <div>
-        <label for="username">아이디:</label>
-        <input type="text" id="username" name="username"/>
-        <div id="usernameError" class="error-msg"></div>
-    </div>
-    <div>
-        <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password"/>
-        <div id="passwordError" class="error-msg"></div>
-    </div>
-    <div>
-        <button type="submit" id="loginBtn">로그인</button>
-    </div>
-</form>
-
-<hr/>
-
-<!-- 🔐 GitHub 로그인 버튼 -->
-<div>
-    <a href="/oauth2/authorization/github">
-        <button style="background-color: black; color: white; padding: 10px;">
-            GitHub로 로그인
-        </button>
-    </a>
+<div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
 </div>
 
-<div>
-    <a href="/register">
-        <button style="background-color: green; color: white; padding: 10px; border: none; cursor: pointer;">
-            회원가입
-        </button>
-    </a>
+<div class="container main-container">
+    <div class="login-card">
+        <div class="card-header">
+            <h2 class="mb-0"><i class="fas fa-shield-alt me-2"></i>인증 서버 로그인</h2>
+            <p class="mb-0 mt-2 opacity-75">계정 정보를 입력해주세요</p>
+        </div>
+        <div class="card-body p-5">
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label for="username" class="form-label"><i class="fas fa-user me-2"></i>아이디</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="아이디를 입력하세요">
+                    <div id="usernameError" class="error-msg"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label"><i class="fas fa-lock me-2"></i>비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요">
+                    <div id="passwordError" class="error-msg"></div>
+                </div>
+                <div class="d-grid mb-4">
+                    <button type="submit" class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt me-2"></i>로그인</button>
+                </div>
+            </form>
+
+            <div class="divider"><span>또는</span></div>
+
+            <div class="d-grid gap-3">
+                <a href="/oauth2/authorization/github" class="btn btn-github"><i class="fab fa-github me-2"></i>GitHub로 로그인</a>
+                <a href="/register" class="btn btn-success"><i class="fas fa-user-plus me-2"></i>회원가입</a>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script src="/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+<script type="module">
+    import { getData } from "/js/api.js";
 
-<script>
     class LoginHandler {
         constructor() {
             this.form = document.getElementById('loginForm');
@@ -63,33 +193,22 @@
             this.usernameErrorDiv = document.getElementById('usernameError');
             this.passwordErrorDiv = document.getElementById('passwordError');
             this.loginBtn = document.getElementById('loginBtn');
-
             this.initEventListeners();
         }
 
-        initEventListeners() {
-            this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        }
+        initEventListeners() { this.form.addEventListener('submit', (e) => this.handleSubmit(e)); }
 
         async handleSubmit(e) {
             e.preventDefault();
-
             const username = this.usernameInput.value.trim();
             const password = this.passwordInput.value;
-
             this.clearErrors();
             this.setLoading(true);
 
             try {
-                // 1단계: Validation 체크
                 const isValid = await this.validateCredentials(username, password);
-                if (!isValid) {
-                    return;
-                }
-
-                // 2단계: Spring Security 로그인
+                if (!isValid) return;
                 await this.performLogin(username, password);
-
             } catch (error) {
                 console.error('Login error:', error);
                 this.showError('password', '서버 오류가 발생했습니다.');
@@ -102,26 +221,15 @@
             try {
                 const response = await fetch('/login/form-valid', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-
-                if (response.ok) {
-                    return true;
-                }
-
+                if (response.ok) return true;
                 if (response.status === 400) {
                     const errors = await response.json();
                     this.displayValidationErrors(errors);
-                } else {
-                    this.showError('password', '유효성 검사 실패');
-                }
-
+                } else { this.showError('password', '유효성 검사 실패'); }
                 return false;
-
             } catch (error) {
                 console.error('Validation error:', error);
                 this.showError('password', '유효성 검사 중 오류 발생');
@@ -137,99 +245,76 @@
             try {
                 const response = await fetch('/login/login-process', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: params.toString()
                 });
-
                 if (response.ok) {
-                    // 로그인 성공
-                    alert('로그인 성공!');
+                    // 로그인 성공 시 바로 이동
                     window.location.href = '/home';
                 } else {
-                    // 로그인 실패
                     await this.handleLoginFailure(response);
                 }
-
             } catch (error) {
                 console.error('Login request error:', error);
                 this.showError('password', '로그인 요청 실패');
             }
         }
 
+
         async handleLoginFailure(response) {
             let errorMessage = '로그인에 실패했습니다.';
-
             try {
                 const contentType = response.headers.get('content-type');
-
                 if (contentType && contentType.includes('application/json')) {
                     const errorData = await response.json();
-                    if (errorData.message) {
-                        errorMessage = errorData.message;
-                    }
+                    if (errorData.message) errorMessage = errorData.message;
                 } else {
-                    // Spring Security는 보통 HTML 응답을 반환하므로
-                    // 상태 코드에 따라 적절한 메시지 표시
                     switch (response.status) {
-                        case 401:
-                            errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.';
-                            break;
-                        case 403:
-                            errorMessage = '접근이 거부되었습니다.';
-                            break;
-                        default:
-                            errorMessage = `로그인 실패 (${response.status})`;
+                        case 401: errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.'; break;
+                        case 403: errorMessage = '접근이 거부되었습니다.'; break;
+                        default: errorMessage = `로그인 실패 (${response.status})`;
                     }
                 }
-            } catch (parseError) {
-                console.error('Error parsing login failure response:', parseError);
-            }
-
+            } catch (parseError) { console.error('Error parsing login failure response:', parseError); }
             this.showError('password', errorMessage);
         }
 
         displayValidationErrors(errors) {
-            if (errors.username) {
-                this.showError('username', errors.username);
-            }
-            if (errors.password) {
-                this.showError('password', errors.password);
-            }
+            if (errors.username) this.showError('username', errors.username);
+            if (errors.password) this.showError('password', errors.password);
         }
 
         showError(field, message) {
             if (field === 'username') {
                 this.usernameErrorDiv.textContent = message;
+                this.usernameInput.classList.add('is-invalid');
             } else if (field === 'password') {
                 this.passwordErrorDiv.textContent = message;
+                this.passwordInput.classList.add('is-invalid');
             }
         }
 
         clearErrors() {
             this.usernameErrorDiv.textContent = '';
             this.passwordErrorDiv.textContent = '';
+            this.usernameInput.classList.remove('is-invalid');
+            this.passwordInput.classList.remove('is-invalid');
         }
 
         setLoading(isLoading) {
             if (isLoading) {
-                this.loginBtn.textContent = '로그인 중...';
+                this.loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>로그인 중...';
                 this.loginBtn.disabled = true;
                 this.form.classList.add('loading');
             } else {
-                this.loginBtn.textContent = '로그인';
+                this.loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>로그인';
                 this.loginBtn.disabled = false;
                 this.form.classList.remove('loading');
             }
         }
     }
 
-    // DOM이 로드되면 LoginHandler 초기화
-    document.addEventListener('DOMContentLoaded', () => {
-        new LoginHandler();
-    });
+    document.addEventListener('DOMContentLoaded', () => { new LoginHandler(); });
 </script>
-
 </body>
 </html>
