@@ -1,7 +1,7 @@
 package entus.authServer.controller;
 
-import entus.authServer.domain.dto.component.LoginRequestDto;
-import entus.authServer.domain.dto.component.RegisterRequestDto;
+import entus.authServer.dto.component.LoginRequestDto;
+import entus.authServer.dto.component.RegisterRequestDto;
 import entus.authServer.domain.user.local.dto.LocalUserRegisterDTO;
 import entus.authServer.service.authentication.local.LocalUserService;
 import entus.authServer.service.authorization.JwtService;

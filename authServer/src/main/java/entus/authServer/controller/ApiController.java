@@ -1,6 +1,6 @@
 package entus.authServer.controller;
 
-import entus.authServer.domain.dto.page.HomePageDto;
+import entus.authServer.dto.page.HomePageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

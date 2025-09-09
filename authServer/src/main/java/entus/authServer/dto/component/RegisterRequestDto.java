@@ -1,4 +1,4 @@
-package entus.authServer.domain.dto.component;
+package entus.authServer.dto.component;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

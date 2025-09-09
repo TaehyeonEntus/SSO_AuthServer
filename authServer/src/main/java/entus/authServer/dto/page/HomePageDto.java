@@ -1,4 +1,4 @@
-package entus.authServer.domain.dto.page;
+package entus.authServer.dto.page;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

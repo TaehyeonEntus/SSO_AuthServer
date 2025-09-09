@@ -1,6 +1,6 @@
 package entus.authServer.domain.user.local.dto;
 
-import entus.authServer.domain.dto.component.RegisterRequestDto;
+import entus.authServer.dto.component.RegisterRequestDto;
 import lombok.Data;
 
 @Data

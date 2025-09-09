@@ -1,4 +1,4 @@
-package entus.authServer.domain.dto.component;
+package entus.authServer.dto.component;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
