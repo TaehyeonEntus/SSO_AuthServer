@@ -53,6 +53,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/favicon.ico").permitAll()
                         .requestMatchers("/", "/login", "/login/form-valid","/login/login-process", "/register", "/home", "/token/refresh").permitAll()
+                        .requestMatchers("/public").permitAll()
+                        .requestMatchers("/user").hasRole("USER")
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
