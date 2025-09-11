@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(EndpointRequest.to("prometheus")).permitAll()
                         .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/favicon.ico").permitAll()
                         .requestMatchers("/", "/login", "/login/form-valid","/login/login-process", "/register", "/home", "/token/refresh").permitAll()
                         .requestMatchers("/public").permitAll()
