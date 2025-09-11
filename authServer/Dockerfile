@@ -21,5 +21,5 @@ COPY . .
 RUN chmod +x ./gradlew
 RUN ./gradlew clean build
 
-EXPOSE 8080
+EXPOSE 9000
 CMD ["java", "-jar", "build/libs/authServer-0.0.1-SNAPSHOT.jar"]
