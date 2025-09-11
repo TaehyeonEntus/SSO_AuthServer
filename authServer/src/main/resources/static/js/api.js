@@ -1,3 +1,4 @@
+
 export async function getData(endpoint) {
     //GET
     let options = {
