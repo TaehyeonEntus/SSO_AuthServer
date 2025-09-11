@@ -3,9 +3,9 @@ package entus.authServer.service.authorization;
 import entus.authServer.exception.AccessTokenException;
 import entus.authServer.exception.RefreshTokenException;
 import entus.authServer.repository.TokenRepository;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -19,11 +19,9 @@ public class JwtValidator {
     private final SecretKey secretKey;
     private final TokenRepository tokenRepository;
 
-    public JwtValidator(TokenRepository tokenRepository) {
-        Dotenv dotenv = Dotenv.load();
-        String secret = dotenv.get("JWT_SECRET");
-
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    public JwtValidator(TokenRepository tokenRepository,
+                        @Value("${JWT_SECRET}") String jwtSecret) {
+        this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         this.tokenRepository = tokenRepository;
     }
 
