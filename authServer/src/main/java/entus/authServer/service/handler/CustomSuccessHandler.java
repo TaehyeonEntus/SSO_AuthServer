@@ -28,8 +28,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         String name = authentication.getName();
         User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
-        System.out.println(request.getRequestURI());
-        System.out.println(request.getRequestURL());
+        System.out.println("성공");
         jwtCookieBuilder.createJwtCookieResponse(request, response, user);
         response.setStatus(HttpServletResponse.SC_OK);
     }

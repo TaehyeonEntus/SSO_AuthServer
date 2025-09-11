@@ -14,6 +14,7 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
+        System.out.println("실패");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
