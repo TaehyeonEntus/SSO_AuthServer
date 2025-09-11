@@ -20,14 +20,14 @@ public class JwtCookieBuilder {
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
         accessCookie.setMaxAge(600);
-        accessCookie.setDomain("taehyeon-studio.onrender.com");
+        accessCookie.setDomain("sso-authserver.onrender.com");
         accessCookie.setHttpOnly(true);
         accessCookie.setPath("/");
         response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
         refreshCookie.setMaxAge(604800);
-        refreshCookie.setDomain("taehyeon-studio.onrender.com");
+        refreshCookie.setDomain("sso-authserver.onrender.com");
         refreshCookie.setHttpOnly(true);
         refreshCookie.setPath("/");
         response.addCookie(refreshCookie);
