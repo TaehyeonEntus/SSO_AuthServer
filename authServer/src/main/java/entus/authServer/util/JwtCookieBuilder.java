@@ -20,14 +20,14 @@ public class JwtCookieBuilder {
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
         accessCookie.setMaxAge(600);
-        accessCookie.setDomain("sso-authserver.onrender.com");
+        accessCookie.setDomain(".taehyeon-studio.site");
         accessCookie.setHttpOnly(true);
         accessCookie.setPath("/");
         response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
         refreshCookie.setMaxAge(604800);
-        refreshCookie.setDomain("sso-authserver.onrender.com");
+        refreshCookie.setDomain(".taehyeon-studio.site");
         refreshCookie.setHttpOnly(true);
         refreshCookie.setPath("/");
         response.addCookie(refreshCookie);
@@ -37,14 +37,14 @@ public class JwtCookieBuilder {
                                         HttpServletResponse response) {
         Cookie accessCookie = new Cookie("access_token", null);
         accessCookie.setMaxAge(0);
-        accessCookie.setDomain("sso-authserver.onrender.com");
+        accessCookie.setDomain(".taehyeon-studio.site");
         accessCookie.setHttpOnly(true);
         accessCookie.setPath("/");
         response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("refresh_token", null);
         refreshCookie.setMaxAge(0);
-        refreshCookie.setDomain("sso-authserver.onrender.com");
+        refreshCookie.setDomain(".taehyeon-studio.site");
         refreshCookie.setHttpOnly(true);
         refreshCookie.setPath("/");
         response.addCookie(refreshCookie);
