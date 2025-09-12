@@ -9,12 +9,11 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class CustomFailureHandler implements AuthenticationFailureHandler {
+public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
-        System.out.println("실패");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

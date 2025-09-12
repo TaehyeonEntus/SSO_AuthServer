@@ -32,4 +32,21 @@ public class JwtCookieBuilder {
         refreshCookie.setPath("/");
         response.addCookie(refreshCookie);
     }
+
+    public void deleteJwtCookieResponse(HttpServletRequest request,
+                                        HttpServletResponse response) {
+        Cookie accessCookie = new Cookie("access_token", null);
+        accessCookie.setMaxAge(0);
+        accessCookie.setDomain("sso-authserver.onrender.com");
+        accessCookie.setHttpOnly(true);
+        accessCookie.setPath("/");
+        response.addCookie(accessCookie);
+
+        Cookie refreshCookie = new Cookie("refresh_token", null);
+        refreshCookie.setMaxAge(0);
+        refreshCookie.setDomain("sso-authserver.onrender.com");
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setPath("/");
+        response.addCookie(refreshCookie);
+    }
 }

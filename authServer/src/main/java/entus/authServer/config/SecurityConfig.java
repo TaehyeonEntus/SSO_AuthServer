@@ -3,8 +3,9 @@ package entus.authServer.config;
 import entus.authServer.exception.CustomAccessDeniedHandler;
 import entus.authServer.exception.CustomAuthenticationEntryPoint;
 import entus.authServer.filter.AccessTokenValidFilter;
-import entus.authServer.service.handler.CustomFailureHandler;
-import entus.authServer.service.handler.CustomSuccessHandler;
+import entus.authServer.service.handler.CustomLoginFailureHandler;
+import entus.authServer.service.handler.CustomLoginSuccessHandler;
+import entus.authServer.service.handler.CustomLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -31,8 +32,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomSuccessHandler customSuccessHandler;
-    private final CustomFailureHandler customFailureHandler;
+    private final CustomLoginSuccessHandler customLoginSuccessHandler;
+    private final CustomLoginFailureHandler customLoginFailureHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final AccessTokenValidFilter accessTokenValidFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -60,15 +62,19 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .successHandler(customSuccessHandler)
-                        .failureHandler(customFailureHandler)
+                        .successHandler(customLoginSuccessHandler)
+                        .failureHandler(customLoginFailureHandler)
                         .loginPage("/login")
                         .loginProcessingUrl("/login/login-process"))
 
                 .oauth2Login(auth -> auth
-                        .successHandler(customSuccessHandler)
-                        .failureHandler(customFailureHandler)
+                        .successHandler(customLoginSuccessHandler)
+                        .failureHandler(customLoginFailureHandler)
                         .loginPage("/login"))
+
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(customLogoutSuccessHandler))
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)

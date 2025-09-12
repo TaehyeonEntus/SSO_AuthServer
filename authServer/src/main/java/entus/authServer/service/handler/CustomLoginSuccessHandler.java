@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 @Service
 @RequiredArgsConstructor
-public class CustomSuccessHandler implements AuthenticationSuccessHandler {
+public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
     private final UserRepository userRepository;
     private final JwtCookieBuilder jwtCookieBuilder;
     @Override
