@@ -19,7 +19,6 @@ public class JwtCookieBuilder {
         String refreshToken = jwtGenerator.generateRefreshToken(user);
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
-        accessCookie.setSecure(true);
         accessCookie.setMaxAge(600);
         accessCookie.setDomain("sso-authserver.onrender.com");
         accessCookie.setHttpOnly(true);
@@ -27,7 +26,6 @@ public class JwtCookieBuilder {
         response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-        refreshCookie.setSecure(true);
         refreshCookie.setMaxAge(604800);
         refreshCookie.setDomain("sso-authserver.onrender.com");
         refreshCookie.setHttpOnly(true);

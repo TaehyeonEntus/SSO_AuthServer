@@ -68,8 +68,7 @@ public class SecurityConfig {
                 .oauth2Login(auth -> auth
                         .successHandler(customSuccessHandler)
                         .failureHandler(customFailureHandler)
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/home"))
+                        .loginPage("/login"))
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
