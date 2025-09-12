@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ApiController {
-    @Value("${RESOURCE_SERVER}")
+    @Value("${RESOURCE_SERVERS}")
     private String resourceServers;
     private List<String> resourceServersList;
 
