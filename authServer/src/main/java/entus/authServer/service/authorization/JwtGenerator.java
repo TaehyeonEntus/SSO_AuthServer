@@ -23,8 +23,7 @@ public class JwtGenerator {
     private final SecretKey secretKey;
     private final TokenRepository tokenRepository;
 
-    public JwtGenerator(TokenRepository tokenRepository,
-                        @Value("${JWT_SECRET}") String jwtSecret) {
+    public JwtGenerator(TokenRepository tokenRepository, @Value("${JWT_SECRET}") String jwtSecret) {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         this.tokenRepository = tokenRepository;
     }

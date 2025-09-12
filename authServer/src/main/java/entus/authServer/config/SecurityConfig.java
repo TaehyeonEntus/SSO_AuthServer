@@ -6,6 +6,7 @@ import entus.authServer.filter.AccessTokenValidFilter;
 import entus.authServer.service.handler.CustomLoginFailureHandler;
 import entus.authServer.service.handler.CustomLoginSuccessHandler;
 import entus.authServer.service.handler.CustomLogoutSuccessHandler;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -39,8 +41,14 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    @Value("${resource.servers}")
-    private final List<String> resourceServers;
+    @Value("${RESOURCE_SERVER}")
+    private String resourceServers;
+    private List<String> resourceServersList;
+
+    @PostConstruct
+    public void init() {
+        resourceServersList = Arrays.stream(resourceServers.split(",")).toList();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -92,7 +100,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(resourceServers);
+        config.setAllowedOrigins(resourceServersList);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
