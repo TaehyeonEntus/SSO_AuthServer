@@ -26,7 +26,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        System.out.println("성공");
         String name = authentication.getName();
         User user = userRepository.findByName(name).orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
         jwtCookieBuilder.createJwtCookieResponse(request, response, user);
